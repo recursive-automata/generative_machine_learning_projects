@@ -11,10 +11,10 @@ import glob
 import tensorflow as tf
 
 from data.koch import make_koch_samples
-from model.discriminator import build_discriminator
-from model.IFSLayer import generate_random_function_indices
-from model.IFSLayer import IFSLayer
-from model.IFSGAN import IFSGAN
+from model.discriminator import build_mlp
+from model.IFS import generate_random_function_indices
+from model.IFS import IFSLayer
+from model.IFS import IFSGAN
 from training.hausdorff import calculate_hausdorff_suprema
 from training.save_image import scatter
 from training.train_step import make_train_step
@@ -110,7 +110,7 @@ def main():
     dataset = make_dataset(sample_depth, args.batch_size, n_functions, args.n_applications, random_generator)
 
     ifs_layer = IFSLayer(n_dim, n_functions, args.max_norm)
-    discriminator = build_discriminator(n_dim, args.width, args.depth, args.dropout)
+    discriminator = build_mlp(n_dim, args.width, args.depth, args.dropout)
     ifs_gan = IFSGAN(ifs_layer, discriminator, random_generator, gp_coef=args.gp_coef)
 
     beta_1 = 0.5
