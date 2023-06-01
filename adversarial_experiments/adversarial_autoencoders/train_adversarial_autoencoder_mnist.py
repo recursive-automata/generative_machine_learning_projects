@@ -92,10 +92,10 @@ def main():
     x0 = _preprocess_mnist(test_images)
     y0 = test_labels
 
-    # initialize so the latents start in view
+    # initialize so the latents start near the origin
     s0 = 0.3
     mean_initializer = tf.keras.initializers.Orthogonal(gain=s0)
-    log_var_initializer = tf.keras.initializers.Constant(tf.math.log(s0))
+    log_var_initializer = tf.keras.initializers.Constant(float(2 * tf.math.log(s0)))
     encoder = build_convnet_encoder(
         28,
         1,

@@ -19,10 +19,8 @@ but is designed for ease of experimentation and extension.
 
 ### To run this demo:
 
-1. Prepare a python3 environment with numpy, matplotlib, and tensorflow. 
-    An example that works on a Mac M1 is provided in 
-    `requirements.example.m1.txt`.
-2. Install the local package: `python -m pip install .`.
+1. Prepare a python3 environment with numpy, matplotlib, and tensorflow.
+2. Install the local `gan_utils` packages: `cd ..; python -m pip install .; cd IFS_GAN`.
 3. Run the script: `python train_koch_make_video.py`.
 The script will create a video of the training process
 and write it to `images/koch_video.mp4`.
