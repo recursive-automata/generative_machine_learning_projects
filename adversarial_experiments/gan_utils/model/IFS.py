@@ -2,12 +2,8 @@
 
 import tensorflow as tf
 
+from .common import update_model
 from .discriminator import calculate_gradient_penalty
-
-
-def _update(model, loss, tape, optimizer):
-    gradients = tape.gradient(loss, model.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
 
 
 class IFSGAN(tf.keras.Model):
@@ -28,7 +24,8 @@ class IFSGAN(tf.keras.Model):
         return x_, p_
 
     @tf.function
-    def compute_discriminator_loss(self, x, codes):
+    def compute_discriminator_loss(self, x):
+        x, codes = x
         x_, p_ = self([x, codes], training=True)
         p = self.discriminator(x, training=True)
 
@@ -43,7 +40,8 @@ class IFSGAN(tf.keras.Model):
         loss += tf.reduce_sum(self.discriminator.losses)
         return loss
 
-    def compute_generator_loss(self, x, codes):
+    def compute_generator_loss(self, x):
+        x, codes = x
         _, p_ = self([x, codes], training=True)
         loss = -tf.math.log(tf.nn.sigmoid(p_))
 
@@ -52,10 +50,10 @@ class IFSGAN(tf.keras.Model):
         return loss
 
     def update_discriminator(self, loss, tape, optimizer):
-        _update(self.discriminator, loss, tape, optimizer)
+        update_model(self.discriminator, loss, tape, optimizer)
 
     def update_generator(self, loss, tape, optimizer):
-        _update(self.ifs_layer, loss, tape, optimizer)
+        update_model(self.ifs_layer, loss, tape, optimizer)
 
     def encode(self, x, codes):
         return self.ifs_layer((x, codes), training=False)

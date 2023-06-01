@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import cv2
+import glob
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -14,8 +16,8 @@ def scatter(x, filename, xlim=None, ylim=None, figsize=(12, 6), axis='off', **kw
     :param axis:
     :param figsize:
     """
-    if figsize is not None:
-        fig = plt.figure(figsize=figsize)
+    fig = plt.figure(figsize=figsize)
+
     if xlim is not None:
         plt.xlim(xlim)
     if ylim is not None:
@@ -27,7 +29,8 @@ def scatter(x, filename, xlim=None, ylim=None, figsize=(12, 6), axis='off', **kw
     plt.scatter(*x.T, **kwargs)
     plt.savefig(filename)
 
-    plt.close()
+    plt.clf()
+    plt.close("all")
     del fig
 
 
@@ -60,7 +63,28 @@ def raster(f, xlim, ylim, filename=None, pixels=250, figsize=(12, 6)):
     plt.scatter(x_grid[:, 0], x_grid[:, 1], c=c)
     plt.savefig(filename)
 
-    plt.close()
+    plt.clf()
+    plt.close("all")
     del fig
     del x_grid
     del c
+
+
+def make_video(image_file_prefix, fps=6):
+    files = glob.glob(f'{image_file_prefix}_*.png')
+    files = sorted(files)
+
+    size = None
+    img_array = []
+    for filename in files:
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width, height)
+        img_array.append(img)
+
+    fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    out = cv2.VideoWriter(f'{image_file_prefix}_video.mp4', fourcc, fps, size)
+
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
