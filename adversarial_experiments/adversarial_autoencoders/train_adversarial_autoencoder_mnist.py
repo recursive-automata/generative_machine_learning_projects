@@ -2,7 +2,7 @@
 #!/usr/bin/python3
 
 """
-Train an IFS-GAN to learn the Koch curve from programmatically generated sample points.
+Train an adversial autoencoder and render a video of a sample of points in the learned latent space through training.
 """
 
 import argparse
